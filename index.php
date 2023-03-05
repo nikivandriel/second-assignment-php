@@ -1,7 +1,3 @@
-<?php 
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,31 +7,51 @@
     <title>BMI calculator</title>
 </head>
 <body>
-    <main>
+    <main style="padding-inline-start: 1rem">
         <h1>BMI calculator</h1>
-        <p>Vul hieronder uw lengte in centimeters is en uw gewicht in kilogrammen</p>
-        <label for="length">lengte</label>
-        <input id="length" type="number" value=<?php $length ?> placeholder=<?php $length ?>>
-        <label for="weight">gewicht</label>
-        <input id="weight" type="range" min=40 max=180 stap=5 value=<?php $weight ?>>
-        <input id="weight" type="number" value=<?php $weight ?>>
-        <input type="button" >
-        <?php echo 'hello' ?>
-        <?php 
+        <p>Vul hieronder je lengte in centimeters in en je gewicht in kilogram. Ben je kleiner dan 100 centimeter of weeg je minder dan 35 kilogram? Dan werkt deze tool niet goed voor jou.</p>
+        <form id="bmi-form" action="" method="POST" style="padding-block-end: 1rem">
+            <label for="length">lengte</label>
+            <input name="length" id="length" type="number" placeholder="in cm" min="100" required>
+            <label for="weight">gewicht</label>
+            <input name="weight" id="weight" type="number" placeholder="in kg" min="35" required>
+            <input type="submit" value="Bereken BMI">
+        </form>
 
-            // if BMI is less than 18.5 display Ondergewicht (te laag gewicht)
-            if($bmi <= 18.5) 
-                // if length is less than 150 display next line
-                echo "Ondergewicht (te laag gewicht)";
-                // if length is bigger than 150 and less than 170 display next line
-            elseif($bmi > 18.5 && $bmi <= 24.9 ) 
-                echo "Gezond gewicht";
-                // if length is bigger than 170 and less than 210 display next line
-            elseif($bmi > 25 && $bmi <= 30 ) 
-                echo "Overgewicht";
-                // if length is bigger than 210 display next line
-            elseif($bmi > 30)
-                echo "yErnstig overgewicht (obesitas)";
+        <?php 
+            $bmi = '';
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                // show inputed data
+                function displayInput() { 
+                        echo "Je bent " . ($_POST["length"]/100) . " meter en je hebt een gewicht van " . $_POST["weight"] . " kilogram. </br>";
+                };
+                displayInput();
+
+                // calculate BMI
+                function calculateBmi() {
+                global $bmi;
+                $bmi = $_POST["weight"] / (($_POST["length"]/100) * ($_POST["length"] / 100));
+                echo "Je BMI is " . $bmi . ".</br>";
+                };
+                calculateBmi();
+
+                function displayOutcome() {
+                    global $bmi; 
+                // if BMI is less than 18.5 display ondergewicht (te laag gewicht)
+                if($bmi < 18.5) 
+                    echo "Je hebt ondergewicht (te laag gewicht).";
+                // if BMI is bigger than 18.5 and less than 24.9 display Je hebt een gezond gewicht
+                elseif($bmi >= 18.5 && $bmi < 25 ) 
+                    echo "Je hebt een gezond gewicht.";
+                // if BMI is bigger than 25 and less than 30 display Je hebt overgewicht
+                elseif($bmi >= 25 && $bmi <= 30 ) 
+                    echo "Je hebt overgewicht.";
+                // if BMI is bigger than 30 display Je hebt overgewicht (obesitas)
+                elseif($bmi > 30)
+                    echo "Je hebt ernstig overgewicht (obesitas).";
+                };
+                displayOutcome();
+            }
         ?>
     </main>
 </body>
